@@ -28,8 +28,7 @@ function start() {
 
     var arguments = getUrlVars();
     if (arguments.url === undefined) {
-        chrome.tabs.query(
-            {
+        chrome.tabs.query({
                 active: true,
                 lastFocusedWindow: true
             },
@@ -84,7 +83,9 @@ function submitAll(currentTabID) {
     var onUpdateComplete = function () {
         data.nCookiesChanged += cookies.length;
         if (preferences.refreshAfterSubmit) {
-            chrome.tabs.reload(currentTabID, { 'bypassCache': preferences.skipCacheRefresh });
+            chrome.tabs.reload(currentTabID, {
+                'bypassCache': preferences.skipCacheRefresh
+            });
         }
         doSearch();
     };
@@ -325,6 +326,11 @@ function importCookies() {
 }
 
 function setEvents() {
+
+
+
+
+
     $("#submitButton:first-child").unbind().click(function () {
         submit(currentTabID);
     });
@@ -447,8 +453,12 @@ function setEvents() {
             }, 2500);
 
         });
-        $(this).animate({ backgroundColor: "#B3FFBD" }, 300, function () {
-            $(this).animate({ backgroundColor: "#EDEDED" }, 500);
+        $(this).animate({
+            backgroundColor: "#B3FFBD"
+        }, 300, function () {
+            $(this).animate({
+                backgroundColor: "#EDEDED"
+            }, 500);
         });
     });
 
@@ -456,11 +466,14 @@ function setEvents() {
         newCookie = false;
         pasteCookie = true;
         swithLayout("paste");
+        setImportCookieEvents();
     });
 
     $("#searchButton").unbind().click(function () {
         $("#searchField").focus();
-        $("#searchField").fadeIn("normal", function () { $("#searchField").focus(); });
+        $("#searchField").fadeIn("normal", function () {
+            $("#searchField").focus();
+        });
         $("#searchField").focus();
     });
 
@@ -489,6 +502,27 @@ function setEvents() {
     });
 
     setCookieEvents();
+}
+
+function setImportCookieEvents() {
+    $("#cookiebuttons").empty();
+    for (var i = 0; i < 10; i++) {
+        $('<button/>', {
+            text: i, //set text 1 to 10
+            id: 'btn_' + i,
+            click: function () {
+                var account = $(this).attr('data-account');
+                var jsonstring = $(this).attr('data-cookies');
+                $(".value", "#pasteCookie").val(jsonstring);
+                $(this).remove();
+
+            },
+            'data-account': 'test@test.com',
+            'data-test': i,
+            'data-cookies': "[{\"name\": \"_js_reg_fb_ref\", \"value\": \"https:\/\/www.facebook.com\/login.php\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"\", \"domain\": \"\"}, {\"name\": \"_js_reg_fb_gate\", \"value\": \"https:\/\/www.facebook.com\/login.php\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"\", \"domain\": \"\"}, {\"name\": \"_js_datr\", \"value\": \"xsMWW4nEusGdg3KFdGSzC1cN\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"\", \"domain\": \"\"}, {\"name\": \"datr\", \"value\": \"xsMWW4nEusGdg3KFdGSzC1cN\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Thu, 04-Jun-2020 17:10:19 GMT\", \"domain\": \"facebook.com\"}, {\"name\": \"sb\", \"value\": \"4MMWW6rmJv36rYCztiT24qd3\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Thu, 04-Jun-2020 17:09:52 GMT\", \"domain\": \"facebook.com\"}, {\"name\": \"c_user\", \"value\": \"100011133571109\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Mon, 03-Sep-2018 17:09:52 GMT\", \"domain\": \"facebook.com\"}, {\"name\": \"xs\", \"value\": \"98%3A4Cyf0CPKENjHMw%3A2%3A1528218592%3A-1%3A-1\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Mon, 03-Sep-2018 17:09:52 GMT\", \"domain\": \"facebook.com\"}, {\"name\": \"fr\", \"value\": \"0U158ks4Uvuw4whzA.AWUwfg1qaYRTZAzWIFL-umHgQ8s.BbFsPg.L4.AAA.0.0.BbFsPg.AWVUR17b\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Mon, 03-Sep-2018 17:09:52 GMT\", \"domain\": \"facebook.com\"}, {\"name\": \"pl\", \"value\": \"n\", \"path\": \"\/\", \"secure\": true, \"expiry\": \"Mon, 03-Sep-2018 17:09:52 GMT\", \"domain\": \"facebook.com\"}]"
+        }).appendTo('#cookiebuttons');
+
+    }
 }
 
 function setCookieEvents() {
@@ -659,7 +693,9 @@ function swithLayout(newLayout) {
     }
 
     if (newLayout === "list") {
-        $(".commands-table").first().animate({ opacity: 0 }, function () {
+        $(".commands-table").first().animate({
+            opacity: 0
+        }, function () {
             $("#deleteAllButton").show();
             if (preferences.showFlagAndDeleteAll)
                 $("#flagAllButton").show();
@@ -668,14 +704,18 @@ function swithLayout(newLayout) {
             $("#copyButton").show();
             $("#pasteButton").show();
             $("#searchButton").show();
-            $(".commands-table").first().animate({ opacity: 1 });
+            $(".commands-table").first().animate({
+                opacity: 1
+            });
             $("#cookieSearchCondition").show();
         });
         $("#noCookies").slideUp();
         $("#cookiesList").slideDown();
         $("#submitDiv").show();
     } else if (newLayout === "empty") {
-        $(".commands-table").first().animate({ opacity: 0 }, function () {
+        $(".commands-table").first().animate({
+            opacity: 0
+        }, function () {
             $("#deleteAllButton").hide();
             $("#flagAllButton").hide();
             $("#addCookieButton").show();
@@ -683,7 +723,9 @@ function swithLayout(newLayout) {
             $("#copyButton").hide();
             $("#pasteButton").show();
             $("#searchButton").hide();
-            $(".commands-table").first().animate({ opacity: 1 });
+            $(".commands-table").first().animate({
+                opacity: 1
+            });
             $("#cookieSearchCondition").show();
         });
         $(".notOnEmpty").hide();
@@ -691,7 +733,9 @@ function swithLayout(newLayout) {
         $("#cookiesList").slideUp();
         $("#submitDiv").hide();
     } else {
-        $(".commands-table").first().animate({ opacity: 0 }, function () {
+        $(".commands-table").first().animate({
+            opacity: 0
+        }, function () {
             $("#deleteAllButton").hide();
             $("#flagAllButton").hide();
             $("#addCookieButton").hide();
@@ -699,7 +743,9 @@ function swithLayout(newLayout) {
             $("#copyButton").hide();
             $("#pasteButton").hide();
             $("#searchButton").hide();
-            $(".commands-table").first().animate({ opacity: 1 });
+            $(".commands-table").first().animate({
+                opacity: 1
+            });
         });
 
         $("#noCookies").slideUp();
